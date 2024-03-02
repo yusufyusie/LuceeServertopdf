@@ -1,123 +1,110 @@
-# windows
+Script Code
 
-To download the necessary jar files for FlyingSaucer and iText, you can use the Maven repository. Here are the steps:
+<!--- Define paths and filenames as variables --->
+<cfset wkhtmltopdfPath = "C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe">
+<cfset htmlPageUrl = "https://griffintrailer.com/dealer/orders/order-confirmation.cfm">
+<cfset pdfOutputPath = "C:\lucee\tomcat\webapps\ROOT\order-confirmation.pdf">
+<cfset pdfFileName = "order-confirmation.pdf">
 
-                Maven repository at https://mvnrepository.com/.
+<!--- Set the page encoding to UTF-8 --->
+<cfprocessingdirective pageEncoding="utf-8">
 
-                Maven repository at https://mvnrepository.com/.
+<!--- Set the content type to application/pdf --->
+<cfcontent type="application/pdf">
 
-Alternatively, you can use wget or curl commands in the terminal to download the jar files. Here are the commands:
+<!--- Set the HTTP header to make the browser download the PDF as a file --->
+<cfheader name="Content-Disposition" value="attachment;filename=#pdfFileName#">
 
-        # Download FlyingSaucer jar
-        wget https://repo1.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.1.22/flying-saucer-core-9.1.22.jar
+<!--- Define the arguments for the wkhtmltopdf command --->
+<cfset wkhtmltopdfArguments = "
+    --page-size Letter 
+    --margin-top 0.25in 
+    --margin-bottom 0.25in 
+    --margin-left 0.25in 
+    --margin-right 0.25in 
+    #htmlPageUrl# 
+    #pdfOutputPath#">
 
-        # Download iText jar
-        wget https://repo1.maven.org/maven2/com/itextpdf/itextpdf/5.5.13/itextpdf-5.5.13.jar
-
-Open a PowerShell window and use the following commands:
-
-        # Download FlyingSaucer jar
-        Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.1.22/flying-saucer-core-9.1.22.jar -OutFile ./flying-saucer-core-9.1.22.jar
-
-        # Download iText jar
-        Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/itextpdf/itextpdf/5.5.13/itextpdf-5.5.13.jar -OutFile ./itextpdf-5.5.13.jar
-
-move them to the lucee-server/bundles or deploy directory in your Lucee installation
-
-        # Lucee Server  # Replace "/path/to/lucee-server/bundles" with the actual path to your Lucee bundles directory
-        Move-Item -Path .\flying-saucer-core-9.1.22.jar -Destination /path/to/lucee-server/bundles
-        Move-Item -Path .\itextpdf-5.5.13.jar -Destination /path/to/lucee-server/bundles
-
-Restart your Lucee server to ensure the new jar files are loaded. 
-        # The command to restart Lucee depends on how you have it installed
-        # Here is a general approach
-        /path/to/lucee-server/bin/lucee restart
-
-        # Replace "C:\lucee\lucee-server\bundles" with the actual path to your Lucee bundles directory
-        Move-Item -Path .\flying-saucer-core-9.1.22.jar -Destination C:\lucee\lucee-server\bundles
-        Move-Item -Path .\itextpdf-5.5.13.jar -Destination C:\lucee\lucee-server\bundles
-
-Download the Jsoup jar file from the Jsoup website (https://jsoup.org/download).
-
-        Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar" -OutFile "C:\path\to\your\directory\jsoup-1.14.3.jar"
-
-Download the wkhtmltopdf executable from the wkhtmltopdf website (https://wkhtmltopdf.org/downloads.html).
-             wkhtmltopdf 
+<!--- Execute the wkhtmltopdf command to convert the HTML page to a PDF --->
+<cfexecute 
+    name="#wkhtmltopdfPath#" 
+    arguments="#wkhtmltopdfArguments#" 
+    timeout="60" 
+/>
 
 
 
+# Windows Setup
 
-# script code
+## Download Necessary Jar Files
 
-			<!--- Set the page encoding to UTF-8 --->
-				<cfprocessingdirective pageEncoding="utf-8">
+You can download the necessary jar files for FlyingSaucer and iText from the Maven repository:
 
-				<!--- Set the content type to application/pdf --->
-				<cfcontent type="application/pdf">
+- [Maven repository](https://mvnrepository.com/)
 
-				<!--- Set the HTTP header to make the browser download the PDF as a file --->
-				<cfheader name="Content-Disposition" value="attachment;filename=order-confirmation.pdf">
+Alternatively, you can use `wget` or `curl` commands in the terminal to download the jar files:
 
-				<!--- Execute the wkhtmltopdf command to convert the HTML page to a PDF --->
-				<cfexecute 
-					name="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe" 
-					arguments="
-						--page-size Letter 
-						--margin-top 0.25in 
-						--margin-bottom 0.25in 
-						--margin-left 0.25in 
-						--margin-right 0.25in 
-						https://griffintrailer.com/dealer/orders/order-confirmation.cfm 
-						C:\lucee\tomcat\webapps\ROOT\order-confirmation.pdf" 
-					timeout="60" 
-				/>
+```powershell
+# Download FlyingSaucer jar
+Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.1.22/flying-saucer-core-9.1.22.jar -OutFile ./flying-saucer-core-9.1.22.jar
+
+# Download iText jar
+Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/itextpdf/itextpdf/5.5.13/itextpdf-5.5.13.jar -OutFile ./itextpdf-5.5.13.jar
+
+Move Jar Files to Lucee Bundles Directory
+Move the downloaded jar files to the lucee-server/bundles or deploy directory in your Lucee installation:
+
+# Replace "C:\lucee\lucee-server\bundles" with the actual path to your Lucee bundles directory
+Move-Item -Path .\flying-saucer-core-9.1.22.jar -Destination C:\lucee\lucee-server\bundles
+Move-Item -Path .\itextpdf-5.5.13.jar -Destination C:\lucee\lucee-server\bundles
 
 
+Restart Lucee Server
+Restart your Lucee server to ensure the new jar files are loaded. The command to restart Lucee depends on how you have it installed. Here is a general approach:
+	# Replace "/path/to/lucee-server/bin/lucee" with the actual path to your Lucee server binary
+/path/to/lucee-server/bin/lucee restart
+
+Download Additional Dependencies
+Download the Jsoup jar file from the Jsoup website:
+Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar" -OutFile "C:\path\to\your\directory\jsoup-1.14.3.jar"
+
+Download the wkhtmltopdf executable from the wkhtmltopdf website:
+
+wkhtmltopdf downloads
 
 
-# liunx
+Linux Setup
+The setup process for Linux is similar to Windows. Here are the steps:
 
+Download Necessary Jar Files
+Use wget or curl to download the required jar files for FlyingSaucer, iText, and Jsoup:
 
-To set up FlyingSaucer, iText, Jsoup, and wkhtmltopdf on a Lucee server running on Linux, you can follow similar steps as mentioned for Windows. Here is how you can do it:
+# Download FlyingSaucer jar
+wget https://repo1.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.1.22/flying-saucer-core-9.1.22.jar
 
-						Download the Necessary Jar Files
-						Use wget or curl to download the required jar files for FlyingSaucer and iText:
+# Download iText jar
+wget https://repo1.maven.org/maven2/com/itextpdf/itextpdf/5.5.13/itextpdf-5.5.13.jar
 
-						Copy
-						Insert
-						New
-						# Download FlyingSaucer jar
-						wget https://repo1.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.1.22/flying-saucer-core-9.1.22.jar
+# Download Jsoup jar
+wget https://repo1.maven.org/maven2/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar
 
-						# Download iText jar
-						wget https://repo1.maven.org/maven2/com/itextpdf/itextpdf/5.5.13/itextpdf-5.5.13.jar
-						Download the Jsoup jar file from the Jsoup website:
+Move Jar Files to Lucee Bundles Directory
+Move the downloaded jar files to the Lucee server bundles directory. Replace /path/to/lucee-server/bundles with the actual path to your Lucee bundles directory:
 
-						Copy
-						Insert
-						New
-						wget https://repo1.maven.org/maven2/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar
-						Move Jar Files to Lucee Bundles Directory
-						You will need to move the downloaded jar files to the Lucee server bundles directory. Replace /path/to/lucee-server/bundles with the actual path to your Lucee bundles directory.
+# Move FlyingSaucer jar
+mv ./flying-saucer-core-9.1.22.jar /path/to/lucee-server/bundles
 
-						Copy
-						Insert
-						New
-						# Move FlyingSaucer jar
-						mv ./flying-saucer-core-9.1.22.jar /path/to/lucee-server/bundles
+# Move iText jar
+mv ./itextpdf-5.5.13.jar /path/to/lucee-server/bundles
 
-						# Move iText jar
-						mv ./itextpdf-5.5.13.jar /path/to/lucee-server/bundles
+# Move Jsoup jar
+mv ./jsoup-1.14.3.jar /path/to/lucee-server/bundles
 
-						# Move Jsoup jar
-						mv ./jsoup-1.14.3.jar /path/to/lucee-server/bundles
-						Install wkhtmltopdf
-						Download the wkhtmltopdf executable from the wkhtmltopdf website and ensure that it is accessible in your Linux environment.
+Install wkhtmltopdf
+Download the wkhtmltopdf executable from the wkhtmltopdf website and ensure that it is accessible in your Linux environment.
 
-						Restart Lucee Server
-						After moving the jar files, restart your Lucee server to ensure the changes are applied.
+Restart Lucee Server
+After moving the jar files, restart your Lucee server to ensure the changes are applied.
 
 Execute wkhtmltopdf Command
 You can use a similar wkhtmltopdf command in your Linux environment to convert HTML to PDF files.
-
-These steps should help you set up FlyingSaucer, iText, Jsoup, and wkhtmltopdf on a Lucee server running on Linux. Let me know if you need further assistance!
